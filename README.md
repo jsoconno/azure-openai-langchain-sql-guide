@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# learn-langchain
-=======
 # learn-langchain
 
 ## setup
@@ -95,4 +92,3 @@ terraform apply out.tfplan
 ```python
 python example.py
 ```
->>>>>>> 22cae76 (Initial commit)
