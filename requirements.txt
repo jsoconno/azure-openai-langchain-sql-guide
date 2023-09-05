@@ -1,0 +1,8 @@
+openai
+langchain
+python-dotenv
+pyodbc --no-binary=pyodbc==4.0.35
+fastapi
+uvicorn[standard]
+pydantic
+azure-identity
