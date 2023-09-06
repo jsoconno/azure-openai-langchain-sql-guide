@@ -109,9 +109,28 @@ Run the example script to see Langchain and Azure OpenAI in action:
 python run.py
 ```
 
-If you decided to use the Terraform deployment for the database, the query should return the natural language response:
+## Testing other prompts
 
-*"Terry Eminhizer had the highest sales order total at $119,961 as part of purchase order PO19285135919."*
+Here are some prompts you can try using the AdventureWorks dataset (if deployed your SQL database with Terraform).
+
+### Product data
+
+- What are the top-selling products?
+- What is the most expensive product?
+- Show me all products in the 'Bike' category.
+- What are the products with a discount?
+
+### Order data
+
+- Show me all orders placed by Customer Keith Harris.
+- What is the name of the customer has placed the most orders?
+- How many pending orders are there?
+
+### Customer data
+
+- What are the names of the top 5 customers by revenue?
+- What is the average age of our customers?
+- Show me all customers who have spent more than $1000.
 
 ## Additional References
 

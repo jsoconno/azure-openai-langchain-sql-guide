@@ -54,12 +54,12 @@ def main():
         toolkit=toolkit,
         verbose=True,
         agent_executor_kwargs={
-            "system_message": SystemMessage(content="You are an expert SQL data query writer for MSSQL.")
+            "system_message": SystemMessage(content="You are an expert MS SQL data query writer.  You only write valid MS SQL queries.")
         }
     )
 
     try:
-        result = agent_executor.run("Show me all products in the 'Bike' category.")
+        result = agent_executor.run("Show me all customers who have spent more than $1000.")
         return result
     except Exception as e:
         return e
