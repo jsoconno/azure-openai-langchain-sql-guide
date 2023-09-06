@@ -1,8 +1,22 @@
-# learn-langchain
+# Natural Language SQL Queries with Azure OpenAI
 
-## setup
+## Introduction
 
-### create a virtual environment
+This guide walks you through how to use [LangChain](https://www.langchain.com/) with [Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) to query your data using natural language.
+
+## Prerequisites
+
+The following are required to follow along with this repository:
+
+- Python 3.6+
+- An Azure account with OpenAI enabled
+- Terraform 1.3+ (optional)
+
+## Getting Started
+
+### Setting Up Your Development Environment
+
+Set up a Python virtual environment to isolate your project dependencies. Follow these steps to create and activate a new virtual environment:
 
 ```bash
 export VIRTUAL_ENV=".venv"
@@ -10,7 +24,21 @@ python3 -m venv $VIRTUAL_ENV
 source .venv/bin/activate
 ```
 
-### install dependencies
+### Installing Required Dependencies
+
+Install essential software, including the Microsoft ODBC driver for SQL Server on macOS.  Without this, installation of `pyodbc` will likely fail.
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+brew tap microsoft/mssql-release https://github.com/Microsoft/homebrew-mssql-release
+brew update
+HOMEBREW_ACCEPT_EULA=Y brew install msodbcsql18 mssql-tools18
+brew install unixodbc # may not be required
+```
+
+For more information, see the Microsoft docs on how to [Install the Microsoft ODBC driver for SQL Server macOS](https://learn.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-microsoft-odbc-driver-sql-server-macos?view=sql-server-ver16).
+
+Next, install your Python dependencies:
 
 ```bash
 pip install --upgrade pip
@@ -18,68 +46,52 @@ python3 -m pip install --upgrade setuptools
 pip install -r requirements.txt
 ```
 
-### set environment variables
+You can find all required dependencies in the `requirements.txt` file at the root of this project.
 
-#### openai api
+### Setting OpenAI Environment Variables
 
-```bash
-export OPENAI_API_KEY="..."
-```
-
-#### azure openai api
+Set up environment variables for both OpenAI and Azure OpenAI services:
 
 ```bash
 export OPENAI_API_TYPE=azure
-export OPENAI_API_VERSION=2023-05-15
+export OPENAI_API_VERSION=2023-07-01-preview
 export OPENAI_API_BASE=https://your-resource-name.openai.azure.com
 export OPENAI_API_KEY="..."
 ```
 
-### setup python script
+Be sure to exclude the trailing `/` from the `OPENAI_API_BASE` if you copy it from the Azure portal.
 
-#### openai api
+Next, set your database connection details as environment variables:
 
-```python
-from langchain.llms import OpenAI
-
-llm = OpenAI()
-
-llm.predict('Say "hi!".)
+```bash
+export SQL_SERVER_NAME="sample-server-12345678"
+export SQL_SERVER_DATABASE_NAME="sample-database"
+export SQL_SERVER_USERNAME="4dm1n157r470r"
+export SQL_SERVER_PASSWORD="4-v3ry-53cr37-p455w0rd"
 ```
 
-#### azure openai api
+You can make these values anything you want them to be provided they meet character, uniqueness, and complexity requirements.
 
-```python
-from langchain.llms import AzureOpenAI
+### Creating Infrastructure as Code with Terraform (Optional)
 
-# Create an instance of Azure OpenAI
-# Replace the deployment name with your own
-llm = AzureOpenAI(
-    deployment_name="td2",
-    model_name="text-davinci-002",
-)
+Automate the creation of your Azure SQL Server and database using Terraform. This is an optional but recommended step, as the example Python script relies on data in this database.
 
-llm('Say "hi!".')
-```
-
-## create sample data with terraform (optional)
-
-### authenticate to azure
+First, log into Azure:
 
 ```bash
 az login
 ```
 
-### create the infrastructure
-
-This will create a new instance of Azure SQL Server and a database pre-loaded with sample data.
+Next, set the Terraform inputs as environment variables using the ones previously defined:
 
 ```bash
-export TF_VAR_sql_server_name="sample-server-12345678"
-export TF_VAR_sql_server_database_name="sample-database"
-export TF_VAR_sql_server_username="4dm1n157r470r"
-export TF_VAR_sql_server_password="4-v3ry-53cr37-p455w0rd"
+export TF_VAR_sql_server_name=$SQL_SERVER_NAME
+export TF_VAR_sql_server_database_name=$SQL_SERVER_DATABASE_NAME
+export TF_VAR_sql_server_username=$SQL_SERVER_USERNAME
+export TF_VAR_sql_server_password=$SQL_SERVER_PASSWORD
 ```
+
+Finally, run Terraform:
 
 ```bash
 terraform init
@@ -87,8 +99,24 @@ terraform plan -out out.tfplan
 terraform apply out.tfplan
 ```
 
-### query and return natural lanugage responses from the database
+If you don't have Terraform installed, it is recommended to do so with [tfenv](https://github.com/tfutils/tfenv).
 
-```python
-python example.py
+### Running the Python Script
+
+Run the example script to see Langchain and Azure OpenAI in action:
+
+```bash
+python run.py
 ```
+
+If you decided to use the Terraform deployment for the database, the query should return the natural language response:
+
+*"Terry Eminhizer had the highest sales order total at $119,961 as part of purchase order PO19285135919."*
+
+## Additional References
+
+For more information about how this was set up, you can review the:
+
+- [Azure OpenAI LangChain Documentation](https://python.langchain.com/docs/integrations/llms/azure_openai)
+
+Tip: If you are having trouble knowing what attributes or methods are available for a given class, you can inspect them in the script by holding down the command (`⌘`) key and selecting the class, method, or attribute.
