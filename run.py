@@ -1,11 +1,12 @@
 import os
 from dotenv import load_dotenv
-from langchain.llms import AzureOpenAI
+# from langchain.llms import AzureOpenAI
 from langchain.chat_models import AzureChatOpenAI
 from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.schema import SystemMessage
+# from langchain.memory import ChatMessageHistory
 import openai
 
 def main():
@@ -41,7 +42,7 @@ def main():
     llm = AzureChatOpenAI(
         deployment_name="gpt-35-turbo-16k",
         model="gpt-35-turbo-16k",
-        temperature=0.5
+        temperature=0.7,
     )
 
     # Use sql database toolkit
@@ -53,15 +54,15 @@ def main():
         toolkit=toolkit,
         verbose=True,
         agent_executor_kwargs={
-            "system_message": SystemMessage(content="You are an expert SQL data analyst.")
+            "system_message": SystemMessage(content="You are an expert SQL data query writer for MSSQL.")
         }
     )
 
     try:
-        result = agent_executor.run("Return the customer with the highest sales order total (TotalDue) as well as the purchase order number and aggregate amount (rounded to the nearest whole number) in the format '<customer_name> had the highest sales order total at <dollar_amount> as part of purchase order <purchase_order_number>.'")
+        result = agent_executor.run("Show me all products in the 'Bike' category.")
         return result
     except Exception as e:
-        return None
+        return e
 
 if __name__ == "__main__":
     result = main()
