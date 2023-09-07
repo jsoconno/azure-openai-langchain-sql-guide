@@ -11,8 +11,9 @@ The following are required to follow along with this repository:
 - Python 3.6+
 - An Azure account with OpenAI enabled
 - Terraform 1.3+ (optional)
+- Docker (if using the Docker setup)
 
-## Getting Started
+## Getting Started (Standard)
 
 ### Setting Up Your Development Environment
 
@@ -33,7 +34,6 @@ Install essential software, including the Microsoft ODBC driver for SQL Server o
 brew tap microsoft/mssql-release https://github.com/Microsoft/homebrew-mssql-release
 brew update
 HOMEBREW_ACCEPT_EULA=Y brew install msodbcsql18 mssql-tools18
-brew install unixodbc # may not be required
 ```
 
 For more information, see the Microsoft docs on how to [Install the Microsoft ODBC driver for SQL Server macOS](https://learn.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-microsoft-odbc-driver-sql-server-macos?view=sql-server-ver16).
@@ -107,6 +107,50 @@ Run the example script to see Langchain and Azure OpenAI in action:
 
 ```bash
 python run.py
+```
+
+## Getting Started (Docker)
+
+If you are using a newer MacBook with an M1 or M2 chip, you will likely have issues getting `pyodbc` or `pymssql` to install with Python due to some system architecture issues.  To resolve this, there is a Dockerfile you can use.
+
+### Creating a .env file
+
+Create a `.env` file at the root.  This file is included in the `.gitignore` file and will not be committed to your repository.  The values in this file will be used during execution with Docker.
+
+```bash
+SQL_SERVER_NAME=...
+SQL_SERVER_DATABASE_NAME=...
+SQL_SERVER_USERNAME=...
+SQL_SERVER_PASSWORD=...
+
+OPENAI_API_TYPE=...
+OPENAI_API_VERSION=...
+OPENAI_API_BASE=...
+OPENAI_API_KEY=...
+```
+
+### Building the Docker image
+
+You now need to build the Docker image so you can use it to run the Python scripts.
+
+```bash
+docker build -t azure-openai-langchain .
+```
+
+### Running Docker
+
+Now you can run Docker using the built image and passing the environment variables set above.
+
+```bash
+docker run --env-file .env -it azure-openai-langchain /bin/bash
+```
+
+### Running the Python Script
+
+Run the example script to see Langchain and Azure OpenAI in action:
+
+```bash
+python3 run.py
 ```
 
 ## Testing other prompts
