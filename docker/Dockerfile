@@ -26,8 +26,8 @@ COPY requirements.txt /app
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install Terraform
-RUN wget https://releases.hashicorp.com/terraform/1.0.7/terraform_1.0.7_linux_amd64.zip && \
-    unzip terraform_1.0.7_linux_amd64.zip && \
+RUN wget https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip && \
+    unzip -o terraform_1.4.6_linux_amd64.zip && \
     mv terraform /usr/local/bin/ && \
     terraform --version
 

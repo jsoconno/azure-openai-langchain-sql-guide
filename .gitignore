@@ -183,8 +183,8 @@ cython_debug/
 # Ignore Mac .DS_Store files
 .DS_Store
 
-# Ignored vscode files
-.vscode/
+# # Ignored vscode files
+# .vscode/
 
 # Ignore Any Generated JSON Files
 operations/automation-script/apply.json
